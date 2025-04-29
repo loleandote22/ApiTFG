@@ -1,0 +1,15 @@
+services:
+  apitfg:
+    image: ${DOCKER_REGISTRY-}apitfg
+    container_name: apiTFG
+    ports:
+     - "8080:8080"
+     - "8081:8081"
+    build:
+      context: .
+      dockerfile: ApiTFG/Dockerfile
+    networks:
+      - redTFG
+networks:
+  redTFG:
+    external: true
