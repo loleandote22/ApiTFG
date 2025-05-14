@@ -2,6 +2,7 @@
 
 namespace ApiTFG.Entidades
 {
+
     public class Usuario
     {
         public int Id { get; set; }
@@ -19,7 +20,10 @@ namespace ApiTFG.Entidades
         public int? EmpresaId { get; set; }
         public Empresa? Empresa { get; set; }
         public List<Horario> Horarios { get; } = [];
+        public List<InventarioEvento> InventarioEventos { get; } = [];
+        public List<InventarioChat> InventarioChats { get; } = [];
     }
+
     public class UsuarioDto
     {
         public required string Nombre { get; set; }
@@ -32,17 +36,20 @@ namespace ApiTFG.Entidades
         public required string Respuesta { get; set; }
         public int? EmpresaId { get; set; }
     }
-    public class UsuarioConsulta 
-    {
-        public int Id { get; set; }
-        public required string Nombre { get; set; }
-    }
+
     public class UsuarioLogin
     {
         public required string Nombre { get; set; }
         [DataType(DataType.Password)]
         public required string Password { get; set; }
     }
+
+    public class UsuarioConsulta
+    {
+        public int Id { get; set; }
+        public required string Nombre { get; set; }
+    }
+
     public class UsuarioRespuesta
     {
         public required string Nombre { get; set; }

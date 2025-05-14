@@ -29,7 +29,7 @@ namespace ApiTFG.Controllers
         public async Task<ActionResult<Horario>> GetHorario(int? id)
         {
             var horario = await _context.Horarios.FindAsync(id);
-            if (horario == null)
+            if (horario is null)
                 return NotFound();
             return horario;
         }
@@ -71,7 +71,7 @@ namespace ApiTFG.Controllers
         public async Task<IActionResult> DeleteHoraio(int id)
         {
             var horario = await _context.Horarios.FindAsync(id);
-            if (horario == null)
+            if (horario is null)
                 return NotFound();
             _context.Remove(horario);
             await _context.SaveChangesAsync();

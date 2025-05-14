@@ -22,6 +22,8 @@ builder.Services.AddCors(options =>
         });
 });
 
+//builder.WebHost.UseKestrel();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -32,6 +34,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowAllOrigins");
+app.MapGet("", () => Results.Ok(new { mensaje = "API funcionando correctamente" }));
 
 app.UseHttpsRedirection();
 
