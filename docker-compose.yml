@@ -10,6 +10,18 @@ services:
       dockerfile: ApiTFG/Dockerfile
     networks:
       - redTFG
+  grok:
+    image: ngrok/ngrok:latest
+    container_name: ngrok
+    command: http https://apitfg:8081
+    environment:
+      NGROK_AUTHTOKEN: 2x5Pts4Zr3ag79H70M7ZqEBvvXQ_46pE33sqKWzx3V537MDYm
+    depends_on:
+      - apitfg
+    networks:
+      - redTFG
 networks:
   redTFG:
     external: true
+    # docker run -it -e NGROK_AUTHTOKEN=2x5Pts4Zr3ag79H70M7ZqEBvvXQ_46pE33sqKWzx3V537MDYm ngrok/ngrok http 8081 --url=feasible-legible-kitten.ngrok-free.appservices:
+  

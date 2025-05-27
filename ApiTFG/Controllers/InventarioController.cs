@@ -21,8 +21,10 @@ namespace ApiTFG.Controllers
             {
                 Id = i.Id,
                 Nombre = i.Nombre,
+                Descripcion = i.Descripcion,
                 Tipo = i.Tipo,
-                Cantidad = i.Cantidad
+                Cantidad = i.Cantidad,
+                EmpresaId = i.EmpresaId
             }).ToListAsync();
 
             if (inventarios == null)
@@ -72,7 +74,7 @@ namespace ApiTFG.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Inventario>> PostInventario(InventarioDto inventarioDto)
+        public async Task<ActionResult<InventarioConsulta>> PostInventario(InventarioDto inventarioDto)
         {
             var inventario = new Inventario
             {
@@ -84,7 +86,17 @@ namespace ApiTFG.Controllers
             };
             _context.Inventarios.Add(inventario);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetInventario), new { id = inventario.Id }, inventario);
+            InventarioConsulta respuesta = new()
+            {
+
+                Id = inventario.Id,
+                Nombre = inventario.Nombre,
+                Descripcion = inventario.Descripcion,
+                Tipo = inventario.Tipo,
+                Cantidad = inventario.Cantidad,
+                EmpresaId = inventario.EmpresaId
+            };
+            return CreatedAtAction(nameof(GetInventario), new { id = inventario.Id }, respuesta);
         }
 
         [HttpPost("comentario")]

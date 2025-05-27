@@ -70,7 +70,8 @@ namespace ApiTFG.Controllers
         [EnableRateLimiting("fixed")]
         public async Task<ActionResult<Usuario>> Login(UsuarioLogin usuarioLogin)
         {
-            var usuario = await _context.Usuarios.FirstOrDefaultAsync(x => x.Nombre == usuarioLogin.Nombre);
+            var usuario = await _context.Usuarios.FirstAsync(x => EF.Functions.Collate(x.Nombre, "Latin1_General_CS_AS")
+        == usuarioLogin.Nombre);
             if (usuario == null)
                 return NotFound();
             if (!PasswordHasher.VerifyPasswordHash(usuarioLogin.Password, usuario.Password, usuario.PasswordSalt))

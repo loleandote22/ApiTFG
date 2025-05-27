@@ -11,7 +11,7 @@ namespace ApiTFG.Entidades
         public required string Nombre { get; set; }
         [MaxLength(50)]
         public required string Tipo { get; set; }
-        [MaxLength(200, ErrorMessage = "El nombre no puede tener más de 50 caracteres")]
+        [MaxLength(200, ErrorMessage = "La descripción no puede tener más de 200 caracteres")]
         public required string Descripcion { get; set; }
         public required int Cantidad { get; set; }
         public required int EmpresaId { get; set; }
@@ -53,8 +53,10 @@ namespace ApiTFG.Entidades
     {
         public int Id { get; set; }
         public required string Nombre { get; set; }
+        public required string Descripcion { get; set; }
         public required string Tipo { get; set; }
         public required int Cantidad { get; set; }
+        public required int EmpresaId { get; set; }
     }
 
     public class InventarioConsultaCompleto
@@ -111,7 +113,7 @@ namespace ApiTFG.Entidades
         public required string Nombre { get; set; }
         [MaxLength(50)]
         public required string Tipo { get; set; }
-        [MaxLength(300, ErrorMessage = "El nombre no puede tener más de 300 caracteres")]
+        [MaxLength(300, ErrorMessage = "La descripción no puede tener más de 300 caracteres")]
         public required string Descripcion { get; set; }
         public required int Cantidad { get; set; }
         public required int UsuarioId { get; set; }
@@ -124,9 +126,7 @@ namespace ApiTFG.Entidades
         public required int InventarioId { get; set; }
         public int? UsuarioId { get; set; }
     }
+
     #endregion
-
-
-
 
 }
