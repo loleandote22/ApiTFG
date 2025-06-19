@@ -16,5 +16,8 @@ Los contenedores necesarios para el correcto funcionamiento del backend son los 
   builder.Services.AddEndpointsApiExplorer();
   builder.Services.AddSwaggerGen();
   ```
+# Visitar el backend
+Para poder consultar el estado de los endpoints los parámetros requeridos para invocarlos y las respuestas esperadas se puede acceder mediante la
+[Documentación swagger](https://native-supreme-locust.ngrok-free.app/swagger/index.html)
 # Código del frontend
 El código de la aplicación que usa esta en el repositorio [TFGAgricola](https://github.com/loleandote22/TFGAgricola)
