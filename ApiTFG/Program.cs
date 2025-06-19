@@ -14,7 +14,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAllOrigins",
-        builder =>
+        builder => 
         {
             builder.AllowAnyOrigin()
                    .AllowAnyMethod()

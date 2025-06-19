@@ -9,6 +9,7 @@ namespace ApiTFG.Controllers
     public class InventarioController : ControllerBase
     {
         private readonly MiDbContext _context;
+        private readonly int _pagina = 20;
         public InventarioController(MiDbContext context)
         {
             _context = context;
@@ -24,7 +25,8 @@ namespace ApiTFG.Controllers
                 Descripcion = i.Descripcion,
                 Tipo = i.Tipo,
                 Cantidad = i.Cantidad,
-                EmpresaId = i.EmpresaId
+                EmpresaId = i.EmpresaId,
+                Unidad = i.Unidad
             }).ToListAsync();
 
             if (inventarios == null)
@@ -33,7 +35,7 @@ namespace ApiTFG.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<InventarioConsultaCompleto>> GetInventario(int id)
+        public async Task<ActionResult<InventarioConsulta>> GetInventario(int id)
         {
             var inventario = await _context.Inventarios
                 .Include(i => i.InventarioEventos)
@@ -43,7 +45,7 @@ namespace ApiTFG.Controllers
             if (inventario is null)
                 return NotFound();
 
-            var inventarioconsulta = new InventarioConsultaCompleto()
+            var inventarioconsulta = new InventarioConsulta()
             {
                 Id = inventario.Id,
                 Nombre = inventario.Nombre,
@@ -51,26 +53,49 @@ namespace ApiTFG.Controllers
                 Descripcion = inventario.Descripcion,
                 Cantidad = inventario.Cantidad,
                 EmpresaId = inventario.EmpresaId,
-                InventarioEventos = inventario.InventarioEventos?.Select(i => new InventarioEventoConsulta
-                {
-                    Id = i.Id,
-                    Tipo = i.Tipo,
-                    Fecha = i.Fecha,
-                    Cantidad = i.Cantidad,
-                    InventarioId = i.InventarioId,
-                    UsuarioId = i.UsuarioId
-                }).ToList() ?? new List<InventarioEventoConsulta>(),
-                InventarioChats = (inventario.InventarioChats?.Select(i => new InventarioChatConsulta
-                {
-                    Id = i.Id,
-                    Mensaje = i.Mensaje,
-                    Fecha = i.Fecha,
-                    InventarioId = i.InventarioId,
-                    UsuarioId = i.UsuarioId
-                }).ToList() ?? new List<InventarioChatConsulta>())
+                Unidad = inventario.Unidad
             };
 
             return inventarioconsulta;
+        }
+        [HttpGet("mensajes/{idInventario}/pagina/{pagina}")]
+        public async Task<ActionResult<IEnumerable<InventarioChatConsulta>>>GeMensajes(int idInventario, int pagina)
+        {
+            var mensajes = await _context.InventarioChats
+                .Skip((pagina - 1) * _pagina)
+                .Where(c => c.InventarioId == idInventario)
+                .OrderByDescending(c => c.Fecha)
+                .Take(_pagina)
+                .Select(c => new InventarioChatConsulta
+                {
+                    Mensaje = c.Mensaje,
+                    Fecha = c.Fecha,
+                    UsuarioNombre = c.Usuario != null ? c.Usuario.Nombre : "Usuario eliminado"
+                })
+                .ToListAsync();
+            if (mensajes == null)
+                return NotFound();
+            return mensajes;
+        }
+        [HttpGet("eventos/{idInventario}/pagina/{pagina}")]
+        public async Task<ActionResult<IEnumerable<InventarioEventoConsulta>>> GetEventos(int idInventario, int pagina)
+        {
+            var eventos = await _context.InventarioEventos
+                .Skip((pagina - 1) * _pagina)
+                .Where(e => e.InventarioId == idInventario)
+                .OrderByDescending(e => e.Fecha)
+                .Take(_pagina)
+                .Select(e => new InventarioEventoConsulta
+                {
+                    Tipo = e.Tipo,
+                    Fecha = e.Fecha,
+                    Cantidad = e.Cantidad,
+                    UsuarioNombre = e.Usuario != null ? e.Usuario.Nombre : "Usuario eliminado"
+                })
+                .ToListAsync();
+            if (eventos == null)
+                return NotFound();
+            return eventos;
         }
 
         [HttpPost]
@@ -82,7 +107,8 @@ namespace ApiTFG.Controllers
                 EmpresaId = inventarioDto.EmpresaId,
                 Tipo = inventarioDto.Tipo,
                 Descripcion = inventarioDto.Descripcion,
-                Cantidad = inventarioDto.Cantidad
+                Cantidad = inventarioDto.Cantidad,
+                Unidad = inventarioDto.Unidad ?? "Unidades"
             };
             _context.Inventarios.Add(inventario);
             await _context.SaveChangesAsync();
@@ -94,7 +120,8 @@ namespace ApiTFG.Controllers
                 Descripcion = inventario.Descripcion,
                 Tipo = inventario.Tipo,
                 Cantidad = inventario.Cantidad,
-                EmpresaId = inventario.EmpresaId
+                EmpresaId = inventario.EmpresaId,
+                Unidad = inventario.Unidad
             };
             return CreatedAtAction(nameof(GetInventario), new { id = inventario.Id }, respuesta);
         }
@@ -133,9 +160,9 @@ namespace ApiTFG.Controllers
                     Tipo = inventarioActualiza.Cantidad > inventario.Cantidad ? "Entrada" : "Salida",
                     Fecha = DateTime.Now,
                     Cantidad = Math.Abs(inventario.Cantidad - inventarioActualiza.Cantidad),
-                    UsuarioId = inventarioActualiza.UsuarioId
+                    UsuarioId = inventarioActualiza.UsuarioId,
                 };
-                _context.InventarioEventos.AddAsync(inventarioEvento);
+                await _context.InventarioEventos.AddAsync(inventarioEvento);
             }
             foreach (var propiedad in inventarioActualiza.GetType().GetProperties())
             {
@@ -149,6 +176,7 @@ namespace ApiTFG.Controllers
             inventario.Tipo = inventarioActualiza.Tipo;
             inventario.Descripcion = inventarioActualiza.Descripcion;
             inventario.Cantidad = inventarioActualiza.Cantidad;
+            inventario.Unidad = inventarioActualiza.Unidad ?? "Unidades";
             _context.Entry(inventario).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return NoContent();

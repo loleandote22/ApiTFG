@@ -18,8 +18,19 @@ namespace ApiTFG.Controllers
         // GET: api/usuarios
         // Solo para desarrollo NO USAR EN LA APLICACIÓN
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UsuarioConsulta>>> GetUsuarios() 
-            => await (from usu in _context.Usuarios select new UsuarioConsulta { Id = usu.Id, Nombre = usu.Nombre}).ToListAsync();
+        public async Task<ActionResult<IEnumerable<UsuarioNombre>>> GetUsuarios() 
+            => await (from usu in _context.Usuarios select new UsuarioNombre { Id = usu.Id, Nombre = usu.Nombre}).ToListAsync();
+
+        [HttpGet("empresa/{empresaId}")]
+        public async Task<ActionResult<IEnumerable<UsuarioConsulta>>>GetUsuariosEmpresa(int empresaId)
+            => await _context.Usuarios.Where(u => u.EmpresaId == empresaId).Select(usuario => new UsuarioConsulta
+            {
+                Id = usuario.Id,
+                Nombre = usuario.Nombre,
+                Rol = usuario.Rol,
+                Imagen = usuario.Imagen
+            }).ToListAsync();
+
 
         // GET: api/usuarios/5
         [HttpGet("{id}")]
@@ -29,6 +40,11 @@ namespace ApiTFG.Controllers
             if (usuario == null)
                 return NotFound();
             return usuario;
+        }
+        [HttpGet("nombre/{nombre}")]
+        public async Task<ActionResult<bool>> ExisteNombre(string nombre)
+        {
+            return await _context.Usuarios.AnyAsync(x => x.Nombre == nombre);
         }
         [HttpGet("pregunta/{nombre}")]
         public async Task<ActionResult<string>> GetUsuarioPregunta(string nombre)
@@ -52,6 +68,7 @@ namespace ApiTFG.Controllers
                     Password = passwordHash,
                     PasswordSalt = passwordSalt,
                     Rol = usuariodto.Rol,
+                    Imagen = "usuario.png",
                     Pregunta = usuariodto.Pregunta,
                     Respuesta = usuariodto.Respuesta,
                     EmpresaId = usuariodto.EmpresaId,
@@ -93,19 +110,23 @@ namespace ApiTFG.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<Usuario>> PutUsuario(int id, UsuarioDto usuarioactualizar)
         {
-            PasswordHasher.CreatePasswordHash(usuarioactualizar.Password, out byte[] passwordHash, out byte[] passwordSalt);
-            Usuario usuario = new Usuario ()
+            byte[] passwordHash;
+            byte[] passwordSalt;
+            var usuario = await _context.Usuarios.FindAsync(id);
+            if (usuario == null)
+                return NotFound();
+            if (usuarioactualizar.Password != "default123")
             {
-                Id = id,
-                Nombre = usuarioactualizar.Nombre,
-                Password = passwordHash,
-                PasswordSalt = passwordSalt,
-                Rol = usuarioactualizar.Rol,
-                Pregunta = usuarioactualizar.Pregunta,
-                Respuesta = usuarioactualizar.Respuesta,
-                EmpresaId = usuarioactualizar.EmpresaId,
-            };
-            _context.Entry(usuario).State = EntityState.Modified;
+                PasswordHasher.CreatePasswordHash(usuarioactualizar.Password, out passwordHash, out passwordSalt);
+                usuario.Password = passwordHash;
+                usuario.PasswordSalt = passwordSalt;
+            }
+            usuario.Nombre = usuarioactualizar.Nombre;
+            usuario.Rol = usuarioactualizar.Rol;
+            usuario.Imagen = usuarioactualizar.Imagen;
+            usuario.Pregunta = usuarioactualizar.Pregunta;
+            usuario.Respuesta = usuarioactualizar.Respuesta;
+            usuario.EmpresaId = usuarioactualizar.EmpresaId;
             try
             {
                 await _context.SaveChangesAsync();
@@ -113,6 +134,10 @@ namespace ApiTFG.Controllers
             catch (DbUpdateConcurrencyException) when (!UsuarioExists(id))
             {
                 return NotFound();
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex);
             }
             return usuario;
         }

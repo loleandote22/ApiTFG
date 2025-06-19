@@ -14,6 +14,8 @@ namespace ApiTFG.Entidades
         [MaxLength(200, ErrorMessage = "La descripción no puede tener más de 200 caracteres")]
         public required string Descripcion { get; set; }
         public required int Cantidad { get; set; }
+        [MaxLength(50)]
+        public string Unidad { get; set; } = "Unidades";
         public required int EmpresaId { get; set; }
         public Empresa? Empresa { get; set; }
         public List<InventarioEvento>? InventarioEventos { get; set; }
@@ -57,6 +59,7 @@ namespace ApiTFG.Entidades
         public required string Tipo { get; set; }
         public required int Cantidad { get; set; }
         public required int EmpresaId { get; set; }
+        public required string Unidad { get; set; } = "Unidades";
     }
 
     public class InventarioConsultaCompleto
@@ -73,21 +76,17 @@ namespace ApiTFG.Entidades
 
     public class InventarioEventoConsulta
     {
-        public int Id { get; set; }
         public required string Tipo { get; set; }
         public required DateTime Fecha { get; set; }
         public required int Cantidad { get; set; }
-        public required int InventarioId { get; set; }
-        public int? UsuarioId { get; set; }
+        public string? UsuarioNombre { get; set; }
     }
 
     public class InventarioChatConsulta
     {
-        public int Id { get; set; }
         public required string Mensaje { get; set; }
         public required DateTime Fecha { get; set; }
-        public required int InventarioId { get; set; }
-        public int? UsuarioId { get; set; }
+        public string? UsuarioNombre { get; set; }
     }
 
     #endregion
@@ -104,6 +103,7 @@ namespace ApiTFG.Entidades
         public required string Descripcion { get; set; }
         public required int Cantidad { get; set; }
         public required int EmpresaId { get; set; }
+        public required string Unidad { get; set; } = "Unidades";
     }
 
     public class InventarioActualizaDto
@@ -117,6 +117,7 @@ namespace ApiTFG.Entidades
         public required string Descripcion { get; set; }
         public required int Cantidad { get; set; }
         public required int UsuarioId { get; set; }
+        public required string Unidad { get; set; } = "Unidades";
     }
 
     public class InventarioChatDto

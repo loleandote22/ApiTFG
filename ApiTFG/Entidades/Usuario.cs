@@ -18,10 +18,20 @@ namespace ApiTFG.Entidades
         [MaxLength(50, ErrorMessage = "El nombre no puede tener más de 50 caracteres")]
         public required string Respuesta { get; set; }
         public int? EmpresaId { get; set; }
+        [MaxLength(50)]
+        public required string Imagen { get; set; }
         public Empresa? Empresa { get; set; }
         public List<Horario> Horarios { get; } = [];
         public List<InventarioEvento> InventarioEventos { get; } = [];
         public List<InventarioChat> InventarioChats { get; } = [];
+    }
+
+    public class UsuarioConsulta
+    {
+        public int Id { get; set; }
+        public required string Nombre { get; set; }
+        public required string Rol { get; set; }
+        public required string Imagen { get; set; }
     }
 
     public class UsuarioDto
@@ -35,6 +45,8 @@ namespace ApiTFG.Entidades
         public required string Pregunta { get; set; }
         public required string Respuesta { get; set; }
         public int? EmpresaId { get; set; }
+        [MaxLength(50)]
+        public string Imagen { get; set; } = "usuario.png";
     }
 
     public class UsuarioLogin
@@ -44,7 +56,7 @@ namespace ApiTFG.Entidades
         public required string Password { get; set; }
     }
 
-    public class UsuarioConsulta
+    public class UsuarioNombre
     {
         public int Id { get; set; }
         public required string Nombre { get; set; }

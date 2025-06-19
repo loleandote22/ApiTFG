@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiTFG.Migrations
 {
     [DbContext(typeof(MiDbContext))]
-    [Migration("20250513134209_FirstMigration")]
-    partial class FirstMigration
+    [Migration("20250608112122_Mig2")]
+    partial class Mig2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -230,6 +230,10 @@ namespace ApiTFG.Migrations
 
                     b.Property<int?>("EmpresaId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Imagen")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nombre")
                         .IsRequired()

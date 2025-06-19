@@ -12,16 +12,22 @@ services:
       - redTFG
   grok:
     image: ngrok/ngrok:latest
-    container_name: ngrok
-    command: http https://apitfg:8081
+    container_name: ngrokApi
+    command: http --url=native-supreme-locust.ngrok-free.app https://apitfg:8081
     environment:
       NGROK_AUTHTOKEN: 2x5Pts4Zr3ag79H70M7ZqEBvvXQ_46pE33sqKWzx3V537MDYm
     depends_on:
       - apitfg
     networks:
       - redTFG
+# Esto todavia no funciona
+  grok2:
+    image: ngrok/ngrok:latest
+    container_name: ngrokPagina
+    command: http --url=commonly-crisp-hookworm.ngrok-free.app 5000
+    environment:
+      NGROK_AUTHTOKEN: 2xxg4gcH7UyGw2PRGtWQEuNnmgJ_2ZTXyWk7G3rMNNCRxWehC
 networks:
   redTFG:
-    external: true
-    # docker run -it -e NGROK_AUTHTOKEN=2x5Pts4Zr3ag79H70M7ZqEBvvXQ_46pE33sqKWzx3V537MDYm ngrok/ngrok http 8081 --url=feasible-legible-kitten.ngrok-free.appservices:
-  
+    external: true  
+   
