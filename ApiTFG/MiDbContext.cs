@@ -11,7 +11,6 @@ namespace ApiTFG
         }
 
         // Agregar DbSets para cada entidad
-        public DbSet<Producto> Productos { get; set; }
         public DbSet<Empresa> Empresas { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Horario> Horarios { get; set; }
