@@ -24,6 +24,7 @@ namespace ApiTFG.Entidades
         public List<Horario> Horarios { get; } = [];
         public List<InventarioEvento> InventarioEventos { get; } = [];
         public List<InventarioChat> InventarioChats { get; } = [];
+        public List<Evento> Eventos { get; } = [];
     }
 
     public class UsuarioConsulta

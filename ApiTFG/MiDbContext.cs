@@ -17,9 +17,15 @@ namespace ApiTFG
         public DbSet<Inventario> Inventarios { get; set; }
         public DbSet<InventarioEvento> InventarioEventos { get; set; }
         public DbSet<InventarioChat> InventarioChats { get; set; }
+        public DbSet<Evento> Eventos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Evento>()
+                .HasOne(e => e.Usuario)
+                .WithMany(u => u.Eventos)
+                .HasForeignKey(e => e.UsuarioId)
+                .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Usuario>()
                 .HasOne(u => u.Empresa)
                 .WithMany(e => e.Usuarios)

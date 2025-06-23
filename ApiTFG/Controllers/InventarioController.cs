@@ -38,8 +38,6 @@ namespace ApiTFG.Controllers
         public async Task<ActionResult<InventarioConsulta>> GetInventario(int id)
         {
             var inventario = await _context.Inventarios
-                .Include(i => i.InventarioEventos)
-                .Include(i => i.InventarioChats)
                 .FirstOrDefaultAsync(i => i.Id == id);
 
             if (inventario is null)

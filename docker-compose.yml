@@ -20,13 +20,26 @@ services:
       - apitfg
     networks:
       - redTFG
+  pagina:
+    container_name: paginaTFG
+    ports:
+     - "5001:5001"
+    build:
+      context: .
+      dockerfile: ApiTFG/pagina/Dockerfile
+    networks:
+      - redTFG
 # Esto todavia no funciona
   grok2:
     image: ngrok/ngrok:latest
     container_name: ngrokPagina
-    command: http --url=commonly-crisp-hookworm.ngrok-free.app 5000
+    command: http --url=commonly-crisp-hookworm.ngrok-free.app http://pagina:5001
+    depends_on:
+      - pagina
     environment:
       NGROK_AUTHTOKEN: 2xxg4gcH7UyGw2PRGtWQEuNnmgJ_2ZTXyWk7G3rMNNCRxWehC
+    networks:
+      - redTFG
 networks:
   redTFG:
     external: true  
