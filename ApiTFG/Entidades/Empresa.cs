@@ -11,7 +11,7 @@ namespace ApiTFG.Entidades
         public required byte[] Password { get; set; }
         public required byte[] PasswordSalt { get; set; }
         public List<Usuario>? Usuarios { get; set; } 
-        public ICollection<Horario>? Horarios { get; set; }
+        public ICollection<Evento>? Eventos { get; set; }
         public ICollection<Inventario>? Inventarios { get; set; }
     }
     public class EmpresaConsulta

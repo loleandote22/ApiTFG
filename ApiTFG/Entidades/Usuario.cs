@@ -21,10 +21,10 @@ namespace ApiTFG.Entidades
         [MaxLength(50)]
         public required string Imagen { get; set; }
         public Empresa? Empresa { get; set; }
-        public List<Horario> Horarios { get; } = [];
         public List<InventarioEvento> InventarioEventos { get; } = [];
         public List<InventarioChat> InventarioChats { get; } = [];
         public List<Evento> Eventos { get; } = [];
+        public List<TareaActualizacion> TareaActualizaciones { get; } = [];
     }
 
     public class UsuarioConsulta

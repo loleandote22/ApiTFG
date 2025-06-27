@@ -105,15 +105,29 @@ namespace ApiTFG.Controllers
             return eventoDetalle;
         }
 
-        // POST api/<EventosController>
+        // POST api/eventos
         [HttpPost]
-        public void Post([FromBody] string value)
-        {
+        public async Task<ActionResult<Evento>> PostEvento(EventoDto eventodto)
+        { var evento = new Evento
+            {
+                Nombre = eventodto.Nombre,
+                Color = eventodto.Color,
+                Inicio = eventodto.Inicio,
+                Fin = eventodto.Fin,
+                Descripcion = eventodto.Descripcion,
+                Ubicacion = eventodto.Ubicacion,
+                UsuarioId = eventodto.UsuarioId,
+                EmpresaId = eventodto.EmpresaId,
+                Tipo = eventodto.Tipo
+            };
+            _context.Eventos.Add(evento);
+            await _context.SaveChangesAsync();
+            return CreatedAtAction(nameof(Get), new { id =  evento}, eventodto);
         }
 
         // PUT api/<EventosController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public void PutEvento(int id, [FromBody] string value)
         {
         }
 
