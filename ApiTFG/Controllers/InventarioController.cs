@@ -155,7 +155,7 @@ namespace ApiTFG.Controllers
                 {
                     InventarioId = id,
                     Inventario = inventario,
-                    Tipo = inventarioActualiza.Cantidad > inventario.Cantidad ? "Entrada" : "Salida",
+                    Tipo = inventarioActualiza.Cantidad > inventario.Cantidad ? 1 : 0,
                     Fecha = DateTime.Now,
                     Cantidad = Math.Abs(inventario.Cantidad - inventarioActualiza.Cantidad),
                     UsuarioId = inventarioActualiza.UsuarioId,

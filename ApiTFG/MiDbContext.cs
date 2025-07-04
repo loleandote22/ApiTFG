@@ -35,7 +35,6 @@ namespace ApiTFG
             #endregion
             
             #region Usuario
-       
             modelBuilder.Entity<Usuario>()
                 .HasIndex(p => p.Nombre)
                 .IsUnique();
@@ -47,22 +46,21 @@ namespace ApiTFG
                 .WithMany(u => u.Eventos)
                 .HasForeignKey(e => e.UsuarioId)
                 .OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<TareaDetalle>()
-                .HasOne(td => td.Evento)
-                .WithOne(e => e.TareaDetalle)
-                .HasForeignKey<TareaDetalle>(td => td.EventoId)
-                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Evento>()
+            .HasOne(e => e.TareaDetalle)
+            .WithOne(td => td.Evento)
+            .HasForeignKey<TareaDetalle>(td => td.EventoId)
+            .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<TareaActualizacion>()
                .HasOne(ta => ta.TareaDetalle)
                .WithMany(td => td.Actualizaciones)
-               .HasForeignKey(ta => ta.Id)
+               .HasForeignKey(ta => ta.TareaDetalleId)
                 .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<TareaActualizacion>()
                .HasOne(ta => ta.Usuario)
                .WithMany(u => u.TareaActualizaciones)
                .HasForeignKey(ta => ta.UsuarioId)
-               // aquí cambiamos el DeleteBehavior para quitar cascada directa
-               .OnDelete(DeleteBehavior.Restrict);
+               .OnDelete(DeleteBehavior.NoAction);
             #endregion
 
             #region Inventario

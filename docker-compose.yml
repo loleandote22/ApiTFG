@@ -26,10 +26,9 @@ services:
      - "5001:5001"
     build:
       context: .
-      dockerfile: ApiTFG/pagina/Dockerfile
+      dockerfile: pagina/Dockerfile
     networks:
       - redTFG
-# Esto todavia no funciona
   grok2:
     image: ngrok/ngrok:latest
     container_name: ngrokPagina
@@ -40,7 +39,43 @@ services:
       NGROK_AUTHTOKEN: 2xxg4gcH7UyGw2PRGtWQEuNnmgJ_2ZTXyWk7G3rMNNCRxWehC
     networks:
       - redTFG
+  influxdb:
+    image: influxdb:1.8
+    container_name: influxdb
+    ports:
+      - "8086:8086"
+    environment:
+      - INFLUXDB_DB=k6db
+    volumes:
+      - influxdb_data:/var/lib/influxdb
+    networks:
+      - redTFG
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - influxdb
+    networks:
+      - redTFG
+    volumes:
+      - grafana_data:/var/lib/grafana
+  k6:
+    image: loadimpact/k6:latest
+    container_name: k6
+    depends_on:
+      - influxdb
+    networks:
+      - redTFG
+    volumes:
+      - ./Tests/stress-test.js:/scripts/stress-test.js:ro
+    entrypoint: ["k6"]
+    command: ["run","--insecure-skip-tls-verify", "--out", "influxdb=http://influxdb:8086/k6db", "/scripts/stress-test.js"]
+
 networks:
   redTFG:
     external: true  
-   
+volumes:
+  influxdb_data: {}
+  grafana_data: {}

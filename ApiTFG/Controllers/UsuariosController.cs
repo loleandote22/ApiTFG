@@ -31,6 +31,9 @@ namespace ApiTFG.Controllers
                 Imagen = usuario.Imagen
             }).ToListAsync();
 
+        [HttpGet("corto/empresa/{empresaId}")]
+        public async Task<ActionResult<IEnumerable<UsuarioNombre>>> GetNombreUsuariosEmpresa(int empresaId)
+         => await (from usu in _context.Usuarios where usu.EmpresaId == empresaId select new UsuarioNombre { Id = usu.Id, Nombre = usu.Nombre }).ToListAsync();
 
         // GET: api/usuarios/5
         [HttpGet("{id}")]

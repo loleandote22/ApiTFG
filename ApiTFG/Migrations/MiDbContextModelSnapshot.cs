@@ -82,9 +82,6 @@ namespace ApiTFG.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int?>("TareaDetalleId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Tipo")
                         .HasColumnType("int");
 
@@ -117,8 +114,7 @@ namespace ApiTFG.Migrations
 
                     b.Property<string>("Descripcion")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("EmpresaId")
                         .HasColumnType("int");
@@ -128,10 +124,9 @@ namespace ApiTFG.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("Tipo")
-                        .IsRequired()
+                    b.Property<int>("Tipo")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("int");
 
                     b.Property<string>("Unidad")
                         .IsRequired()
@@ -193,10 +188,9 @@ namespace ApiTFG.Migrations
                     b.Property<int>("InventarioId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Tipo")
-                        .IsRequired()
+                    b.Property<int>("Tipo")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("int");
 
                     b.Property<int?>("UsuarioId")
                         .HasColumnType("int");
@@ -213,7 +207,10 @@ namespace ApiTFG.Migrations
             modelBuilder.Entity("ApiTFG.Entidades.TareaActualizacion", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<double>("Cantidad")
                         .HasColumnType("float");
@@ -221,13 +218,15 @@ namespace ApiTFG.Migrations
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("TareaId")
+                    b.Property<int>("TareaDetalleId")
                         .HasColumnType("int");
 
                     b.Property<int>("UsuarioId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("TareaDetalleId");
 
                     b.HasIndex("UsuarioId");
 
@@ -247,6 +246,9 @@ namespace ApiTFG.Migrations
 
                     b.Property<int>("EventoId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("Finalizada")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Unidad")
                         .IsRequired()
@@ -299,10 +301,9 @@ namespace ApiTFG.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("Rol")
-                        .IsRequired()
+                    b.Property<int>("Rol")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -384,14 +385,14 @@ namespace ApiTFG.Migrations
                 {
                     b.HasOne("ApiTFG.Entidades.TareaDetalle", "TareaDetalle")
                         .WithMany("Actualizaciones")
-                        .HasForeignKey("Id")
+                        .HasForeignKey("TareaDetalleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ApiTFG.Entidades.Usuario", "Usuario")
                         .WithMany("TareaActualizaciones")
                         .HasForeignKey("UsuarioId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("TareaDetalle");
