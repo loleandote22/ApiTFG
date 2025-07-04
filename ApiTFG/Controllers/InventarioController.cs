@@ -38,8 +38,6 @@ namespace ApiTFG.Controllers
         public async Task<ActionResult<InventarioConsulta>> GetInventario(int id)
         {
             var inventario = await _context.Inventarios
-                .Include(i => i.InventarioEventos)
-                .Include(i => i.InventarioChats)
                 .FirstOrDefaultAsync(i => i.Id == id);
 
             if (inventario is null)
@@ -157,7 +155,7 @@ namespace ApiTFG.Controllers
                 {
                     InventarioId = id,
                     Inventario = inventario,
-                    Tipo = inventarioActualiza.Cantidad > inventario.Cantidad ? "Entrada" : "Salida",
+                    Tipo = inventarioActualiza.Cantidad > inventario.Cantidad ? 1 : 0,
                     Fecha = DateTime.Now,
                     Cantidad = Math.Abs(inventario.Cantidad - inventarioActualiza.Cantidad),
                     UsuarioId = inventarioActualiza.UsuarioId,

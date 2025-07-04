@@ -10,8 +10,7 @@ namespace ApiTFG.Entidades
         [MaxLength(50, ErrorMessage = "El nombre no puede tener más de 50 caracteres")]
         public required string Nombre { get; set; }
         [MaxLength(50)]
-        public required string Tipo { get; set; }
-        [MaxLength(200, ErrorMessage = "La descripción no puede tener más de 200 caracteres")]
+        public required int Tipo { get; set; }
         public required string Descripcion { get; set; }
         public required int Cantidad { get; set; }
         [MaxLength(50)]
@@ -26,7 +25,7 @@ namespace ApiTFG.Entidades
     {
         public int Id { get; set; }
         [MaxLength(50, ErrorMessage = "El nombre no puede tener más de 50 caracteres")]
-        public required string Tipo { get; set; }
+        public required int Tipo { get; set; }
         public required DateTime Fecha { get; set; }
         public required int Cantidad { get; set; }
         public required int InventarioId { get; set; }
@@ -56,7 +55,7 @@ namespace ApiTFG.Entidades
         public int Id { get; set; }
         public required string Nombre { get; set; }
         public required string Descripcion { get; set; }
-        public required string Tipo { get; set; }
+        public required int Tipo { get; set; }
         public required int Cantidad { get; set; }
         public required int EmpresaId { get; set; }
         public required string Unidad { get; set; } = "Unidades";
@@ -66,7 +65,7 @@ namespace ApiTFG.Entidades
     {
         public int Id { get; set; }
         public required string Nombre { get; set; }
-        public required string Tipo { get; set; }
+        public required int Tipo { get; set; }
         public required string Descripcion { get; set; }
         public required int Cantidad { get; set; }
         public required int EmpresaId { get; set; }
@@ -76,7 +75,7 @@ namespace ApiTFG.Entidades
 
     public class InventarioEventoConsulta
     {
-        public required string Tipo { get; set; }
+        public required int Tipo { get; set; }
         public required DateTime Fecha { get; set; }
         public required int Cantidad { get; set; }
         public string? UsuarioNombre { get; set; }
@@ -97,9 +96,7 @@ namespace ApiTFG.Entidades
     {
         [MaxLength(50, ErrorMessage = "El nombre no puede tener más de 50 caracteres")]
         public required string Nombre { get; set; }
-        [MaxLength(50)]
-        public required string Tipo { get; set; }
-        [MaxLength(300, ErrorMessage = "El nombre no puede tener más de 300 caracteres")]
+        public required int Tipo { get; set; }
         public required string Descripcion { get; set; }
         public required int Cantidad { get; set; }
         public required int EmpresaId { get; set; }
@@ -111,9 +108,7 @@ namespace ApiTFG.Entidades
         public int Id { get; set; }
         [MaxLength(50, ErrorMessage = "El nombre no puede tener más de 50 caracteres")]
         public required string Nombre { get; set; }
-        [MaxLength(50)]
-        public required string Tipo { get; set; }
-        [MaxLength(300, ErrorMessage = "La descripción no puede tener más de 300 caracteres")]
+        public required int Tipo { get; set; }
         public required string Descripcion { get; set; }
         public required int Cantidad { get; set; }
         public required int UsuarioId { get; set; }

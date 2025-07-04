@@ -51,7 +51,7 @@ namespace ApiTFG.Migrations
                     b.ToTable("Empresas");
                 });
 
-            modelBuilder.Entity("ApiTFG.Entidades.Horario", b =>
+            modelBuilder.Entity("ApiTFG.Entidades.Evento", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -59,30 +59,46 @@ namespace ApiTFG.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateOnly>("DiaFin")
-                        .HasColumnType("date");
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
-                    b.Property<DateOnly>("DiaInicio")
-                        .HasColumnType("date");
+                    b.Property<string>("Descripcion")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<int>("EmpresaId")
                         .HasColumnType("int");
 
-                    b.Property<TimeOnly>("Fin")
-                        .HasColumnType("time");
+                    b.Property<DateTime?>("Fin")
+                        .HasColumnType("datetime2");
 
-                    b.Property<TimeOnly>("Inicio")
-                        .HasColumnType("time");
+                    b.Property<DateTime>("Inicio")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("Tipo")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Ubicacion")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("EmpresaId");
 
-                    b.ToTable("Horarios");
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("Eventos");
                 });
 
             modelBuilder.Entity("ApiTFG.Entidades.Inventario", b =>
@@ -98,8 +114,7 @@ namespace ApiTFG.Migrations
 
                     b.Property<string>("Descripcion")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("EmpresaId")
                         .HasColumnType("int");
@@ -109,10 +124,9 @@ namespace ApiTFG.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("Tipo")
-                        .IsRequired()
+                    b.Property<int>("Tipo")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("int");
 
                     b.Property<string>("Unidad")
                         .IsRequired()
@@ -174,10 +188,9 @@ namespace ApiTFG.Migrations
                     b.Property<int>("InventarioId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Tipo")
-                        .IsRequired()
+                    b.Property<int>("Tipo")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("int");
 
                     b.Property<int?>("UsuarioId")
                         .HasColumnType("int");
@@ -191,7 +204,7 @@ namespace ApiTFG.Migrations
                     b.ToTable("InventarioEventos");
                 });
 
-            modelBuilder.Entity("ApiTFG.Entidades.Producto", b =>
+            modelBuilder.Entity("ApiTFG.Entidades.TareaActualizacion", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -199,19 +212,43 @@ namespace ApiTFG.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Cantidad")
+                    b.Property<double>("Cantidad")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("TareaDetalleId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Categoria")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Descripcion")
-                        .HasColumnType("nvarchar(max)");
+                    b.HasKey("Id");
 
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.HasIndex("TareaDetalleId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("TareasActualizaciones");
+                });
+
+            modelBuilder.Entity("ApiTFG.Entidades.TareaDetalle", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<double>("Cantidad")
+                        .HasColumnType("float");
+
+                    b.Property<int>("EventoId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Finalizada")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Unidad")
                         .IsRequired()
@@ -219,7 +256,10 @@ namespace ApiTFG.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Productos");
+                    b.HasIndex("EventoId")
+                        .IsUnique();
+
+                    b.ToTable("TareasDetalles");
                 });
 
             modelBuilder.Entity("ApiTFG.Entidades.Usuario", b =>
@@ -261,10 +301,9 @@ namespace ApiTFG.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("Rol")
-                        .IsRequired()
+                    b.Property<int>("Rol")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -276,28 +315,23 @@ namespace ApiTFG.Migrations
                     b.ToTable("Usuarios");
                 });
 
-            modelBuilder.Entity("HorarioUsuario", b =>
+            modelBuilder.Entity("ApiTFG.Entidades.Evento", b =>
                 {
-                    b.Property<int>("HorariosId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UsuariosId")
-                        .HasColumnType("int");
-
-                    b.HasKey("HorariosId", "UsuariosId");
-
-                    b.HasIndex("UsuariosId");
-
-                    b.ToTable("UsuarioHorario", (string)null);
-                });
-
-            modelBuilder.Entity("ApiTFG.Entidades.Horario", b =>
-                {
-                    b.HasOne("ApiTFG.Entidades.Empresa", null)
-                        .WithMany("Horarios")
+                    b.HasOne("ApiTFG.Entidades.Empresa", "Empresa")
+                        .WithMany("Eventos")
                         .HasForeignKey("EmpresaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("ApiTFG.Entidades.Usuario", "Usuario")
+                        .WithMany("Eventos")
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Empresa");
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("ApiTFG.Entidades.Inventario", b =>
@@ -347,6 +381,36 @@ namespace ApiTFG.Migrations
                     b.Navigation("Usuario");
                 });
 
+            modelBuilder.Entity("ApiTFG.Entidades.TareaActualizacion", b =>
+                {
+                    b.HasOne("ApiTFG.Entidades.TareaDetalle", "TareaDetalle")
+                        .WithMany("Actualizaciones")
+                        .HasForeignKey("TareaDetalleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ApiTFG.Entidades.Usuario", "Usuario")
+                        .WithMany("TareaActualizaciones")
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("TareaDetalle");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("ApiTFG.Entidades.TareaDetalle", b =>
+                {
+                    b.HasOne("ApiTFG.Entidades.Evento", "Evento")
+                        .WithOne("TareaDetalle")
+                        .HasForeignKey("ApiTFG.Entidades.TareaDetalle", "EventoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Evento");
+                });
+
             modelBuilder.Entity("ApiTFG.Entidades.Usuario", b =>
                 {
                     b.HasOne("ApiTFG.Entidades.Empresa", "Empresa")
@@ -357,28 +421,18 @@ namespace ApiTFG.Migrations
                     b.Navigation("Empresa");
                 });
 
-            modelBuilder.Entity("HorarioUsuario", b =>
-                {
-                    b.HasOne("ApiTFG.Entidades.Horario", null)
-                        .WithMany()
-                        .HasForeignKey("HorariosId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ApiTFG.Entidades.Usuario", null)
-                        .WithMany()
-                        .HasForeignKey("UsuariosId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("ApiTFG.Entidades.Empresa", b =>
                 {
-                    b.Navigation("Horarios");
+                    b.Navigation("Eventos");
 
                     b.Navigation("Inventarios");
 
                     b.Navigation("Usuarios");
+                });
+
+            modelBuilder.Entity("ApiTFG.Entidades.Evento", b =>
+                {
+                    b.Navigation("TareaDetalle");
                 });
 
             modelBuilder.Entity("ApiTFG.Entidades.Inventario", b =>
@@ -388,11 +442,20 @@ namespace ApiTFG.Migrations
                     b.Navigation("InventarioEventos");
                 });
 
+            modelBuilder.Entity("ApiTFG.Entidades.TareaDetalle", b =>
+                {
+                    b.Navigation("Actualizaciones");
+                });
+
             modelBuilder.Entity("ApiTFG.Entidades.Usuario", b =>
                 {
+                    b.Navigation("Eventos");
+
                     b.Navigation("InventarioChats");
 
                     b.Navigation("InventarioEventos");
+
+                    b.Navigation("TareaActualizaciones");
                 });
 #pragma warning restore 612, 618
         }
