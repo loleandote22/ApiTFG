@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace ApiTFG.Entidades
 {
@@ -21,9 +22,13 @@ namespace ApiTFG.Entidades
         [MaxLength(50)]
         public required string Imagen { get; set; }
         public Empresa? Empresa { get; set; }
+        [JsonIgnore]
         public List<InventarioEvento> InventarioEventos { get; } = [];
+        [JsonIgnore]
         public List<InventarioChat> InventarioChats { get; } = [];
+        [JsonIgnore]
         public List<Evento> Eventos { get; } = [];
+        [JsonIgnore]
         public List<TareaActualizacion> TareaActualizaciones { get; } = [];
     }
 

@@ -52,7 +52,6 @@ namespace ApiTFG.Entidades
         public TareaDetalle TareaDetalle { get; set; }
         public int UsuarioId { get; set; }
 
-        [JsonIgnore]
         public Usuario Usuario { get; set; }
     }
     public class TareaActualizacionDto
@@ -116,8 +115,10 @@ namespace ApiTFG.Entidades
         public required string Color { get; set; }
         public required DateTime Inicio { get; set; }
         public DateTime? Fin { get; set; }
+        public required string Ubicacion { get; set; }
         public required int Tipo { get; set; }
         public int UsuarioId { get; set; }
+        public required string NombreUsuario { get; set; }
     }
 
     public class EventoDia
@@ -129,6 +130,7 @@ namespace ApiTFG.Entidades
         public DateTime? Fin { get; set; }
         public required string Ubicacion { get; set; }
         public required string Descripcion { get; set; }
+        public required string NombreUsuario { get; set; }
     }
 
 }

@@ -33,8 +33,10 @@ namespace ApiTFG.Controllers
                     Color = e.Color,
                     Inicio = e.Inicio,
                     Fin = e.Fin,
+                    Ubicacion = e.Ubicacion!,
                     Tipo = e.Tipo,
-                    UsuarioId = e.UsuarioId
+                    UsuarioId = e.UsuarioId,
+                    NombreUsuario = e.Usuario!.Nombre
                 }).ToListAsync();
         }
 
@@ -51,8 +53,10 @@ namespace ApiTFG.Controllers
                     Color = e.Color,
                     Inicio = e.Inicio,
                     Fin = e.Fin,
+                    Ubicacion = e.Ubicacion!,
                     Tipo = e.Tipo,
-                    UsuarioId = e.UsuarioId
+                    UsuarioId = e.UsuarioId,
+                    NombreUsuario = e.Usuario!.Nombre
                 }).ToListAsync();
         }
 
@@ -74,7 +78,8 @@ namespace ApiTFG.Controllers
                   Ubicacion = e.Ubicacion!,
                   Descripcion = e.Descripcion!,
                   Fin = e.Fin,
-                  Inicio = e.Inicio
+                  Inicio = e.Inicio,
+                  NombreUsuario = e.Usuario!.Nombre
               });
             return eventos;
         }
@@ -93,7 +98,8 @@ namespace ApiTFG.Controllers
                     Ubicacion = e.Ubicacion!,
                     Descripcion = e.Descripcion!,
                     Fin = e.Fin,
-                    Inicio = e.Inicio
+                    Inicio = e.Inicio, 
+                    NombreUsuario = e.Usuario!.Nombre
                 });
         }
 
@@ -101,7 +107,7 @@ namespace ApiTFG.Controllers
         public IEnumerable<EventoDia> GetTareasPendientes(int usuario)
         {
             return _context.Eventos
-                .Where(e => e.Inicio <= DateTime.Today.AddDays(1) && e.UsuarioId == usuario && e.Tipo ==1 && !e.TareaDetalle.Finalizada)
+                .Where(e => e.Inicio <= DateTime.Today.AddDays(1) && e.UsuarioId == usuario && e.Tipo ==0 && !e.TareaDetalle!.Finalizada)
                 .OrderBy(e => e.Inicio)
                 .Select(e => new EventoDia
                 {
@@ -111,14 +117,15 @@ namespace ApiTFG.Controllers
                     Ubicacion = e.Ubicacion!,
                     Descripcion = e.Descripcion!,
                     Fin = e.Fin,
-                    Inicio = e.Inicio
+                    Inicio = e.Inicio,
+                    NombreUsuario = e.Usuario!.Nombre
                 });
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<EventoDetalle>> Get(int id)
         {
-            var evento = await _context.Eventos.Include(e => e.TareaDetalle).ThenInclude(td => td.Actualizaciones).FirstOrDefaultAsync(e => e.Id == id);
+            var evento = await _context.Eventos.Include(e => e.TareaDetalle).ThenInclude(td => td.Actualizaciones).ThenInclude(usu => usu.Usuario).FirstOrDefaultAsync(e => e.Id == id);
             if (evento is null)
                 return NotFound();
             EventoDetalle eventoDetalle = new()
@@ -196,8 +203,8 @@ namespace ApiTFG.Controllers
         [HttpPost("actualizacion")]
         public async Task<ActionResult<TareaActualizacion>> PostTareaActualizacion(TareaActualizacionDto actualizacionDto)
         {
-            var tareaActualizacion = await _context.TareasDetalles.FindAsync(actualizacionDto.TareaDetalleId);
-            if (tareaActualizacion == null)
+            var evento = await _context.Eventos.Include(e => e.TareaDetalle).ThenInclude(td => td!.Actualizaciones).Where(eve => eve.TareaDetalle!.Id == actualizacionDto.TareaDetalleId).FirstOrDefaultAsync();
+            if (evento == null)
                 return NotFound("Tarea no encontrada");
             var actualizacion = new TareaActualizacion
             {
@@ -206,14 +213,14 @@ namespace ApiTFG.Controllers
                 TareaDetalleId = actualizacionDto.TareaDetalleId,
                 UsuarioId = actualizacionDto.UsuarioId
             };
-            _context.TareasActualizaciones.Add(actualizacion);
-            double total = _context.TareasActualizaciones.Sum(a => a.Cantidad);
-            double cantidadDetalle = tareaActualizacion.Cantidad;
-            if (total>= cantidadDetalle)
+            evento.TareaDetalle!.Actualizaciones!.Add(actualizacion);
+            var cantidad = evento.TareaDetalle.Actualizaciones.Sum(a => a.Cantidad);
+            if (cantidad >= evento.TareaDetalle.Cantidad)
             {
-                tareaActualizacion.Finalizada = true;
-                _context.Entry(tareaActualizacion).State = EntityState.Modified;
+                evento.TareaDetalle.Finalizada = true;
+                evento.Color = "#FF0BE62F";
             }
+
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(Get), new { id = actualizacion.Id }, actualizacion);
         }
@@ -259,9 +266,21 @@ namespace ApiTFG.Controllers
             var actualizacion = await _context.TareasActualizaciones.FindAsync(id);
             if (actualizacion == null)
                 return NotFound("Actualización no encontrada");
+            var evento = await _context.Eventos.Include(e => e.TareaDetalle).ThenInclude(td => td!.Actualizaciones).Where(eve => eve.TareaDetalle!.Id == actualizacion.TareaDetalleId).FirstOrDefaultAsync();
+            if (evento == null)
+                return NotFound("Tarea no encontrada");
+            evento.TareaDetalle!.Actualizaciones!.Remove(actualizacion);
+            var cantidad = evento.TareaDetalle.Actualizaciones.Sum(a => a.Cantidad);
+            if (cantidad < evento.TareaDetalle.Cantidad)
+            {
+                evento.TareaDetalle.Finalizada = false;
+                evento.Color = "#FF0B83E6"; // Cambiar color a verde si la tarea está finalizada
+            }
 
-            _context.TareasActualizaciones.Remove(actualizacion);
             await _context.SaveChangesAsync();
+            // _context.TareasActualizaciones.Remove(actualizacion);
+            await _context.SaveChangesAsync();
+           
             return NoContent();
         }
         #endregion
