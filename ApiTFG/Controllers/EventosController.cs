@@ -118,7 +118,7 @@ namespace ApiTFG.Controllers
                     Descripcion = e.Descripcion!,
                     Fin = e.Fin,
                     Inicio = e.Inicio,
-                    NombreUsuario = e.Usuario!.Nombre
+                    NombreUsuario = e.Usuario != null ? e.Usuario.Nombre : ""
                 });
         }
 
